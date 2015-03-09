@@ -30,6 +30,7 @@ public class Process extends UnicastRemoteObject implements Actor, Remote {
 		this.n = n;
 		this.d = -1;
 		this.actors = new Actor[n];
+		this.actors[i] = this;
 		this.receive = true;
 		this.receivedVotes = new int[n];
 		Arrays.fill(receivedVotes, -1);
@@ -45,14 +46,8 @@ public class Process extends UnicastRemoteObject implements Actor, Remote {
 
 		// Step 3: Broadcast vote
 		for (int j = 0; j < n; j++) {
-			if (j == i) {
-				continue;
-			}
-
 			actors[j].receive(i, b);
 		}
-
-		receivedVotes[i] = b;
 
 		// Step 4: Receive votes from all other processors
 		while (Arrays.stream(receivedVotes).anyMatch(v -> v == -1)) {
