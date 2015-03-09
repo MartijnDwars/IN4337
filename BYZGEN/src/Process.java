@@ -82,9 +82,9 @@ public class Process extends UnicastRemoteObject implements Actor, Remote {
 		// Step 8: Compute vote
 		int vote;
 		if (tally >= threshold) {
-			vote = maj;
+			b = maj;
 		} else {
-			vote = 0;
+			b = 0;
 		}
 
 		// Step 9: Set d permanently
