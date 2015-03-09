@@ -13,7 +13,6 @@ public class Process extends UnicastRemoteObject implements Actor, Remote {
 	private int round;
 	private int d;
 	private Actor[] actors;
-	private boolean receive;
 	private ArrayList<HashMap<Integer, Integer>> receivedVotes;
 	private Random random;
 
@@ -34,7 +33,6 @@ public class Process extends UnicastRemoteObject implements Actor, Remote {
 		this.d = -1;
 		this.actors = new Actor[n];
 		this.actors[i] = this;
-		this.receive = true;
 		this.receivedVotes = new ArrayList<HashMap<Integer, Integer>>();
 		this.random = new Random();
 		this.round = 0;
@@ -52,14 +50,13 @@ public class Process extends UnicastRemoteObject implements Actor, Remote {
 		return this.receivedVotes.get(round);
 	}
 
-	public int coordinate() throws RemoteException {
+	public int coordinate() throws RemoteException, InterruptedException {
 		// Step 3: Broadcast vote
-		for (int j = 0; j < n; j++) {
-			actors[j].receive(i, round, b);
-		}
+		broadcast();
 
 		// Step 4: Receive votes from all other processors
 		while (getVotesForRound(round).size() < n) {
+			Thread.sleep(10);
 			// Deliberately empty; loop until you've received all votes
 		}
 
@@ -85,7 +82,6 @@ public class Process extends UnicastRemoteObject implements Actor, Remote {
 		}
 
 		// Step 8: Compute vote
-		int vote;
 		if (tally >= threshold) {
 			b = maj;
 		} else {
@@ -96,7 +92,7 @@ public class Process extends UnicastRemoteObject implements Actor, Remote {
 		if (tally >= 7*n/8) {
 			d = maj;
 
-			log("Permanently chosen for " + d);
+			log("Round " + round + ": Permanently chosen for " + d);
 
 			return 0;
 		}
@@ -105,9 +101,15 @@ public class Process extends UnicastRemoteObject implements Actor, Remote {
 		return -1;
 	}
 
+	private void broadcast() throws RemoteException {
+		for (int j = 0; j < n; j++) {
+			actors[j].receive(i, round, b);
+		}
+	}
+
 	@Override
 	public void receive(int sender, int round, int vote) throws RemoteException {
-		getVotesForRound(round).put(new Integer(sender), vote);
+		getVotesForRound(round).put(sender, vote);
 
 		log("Recorded vote " + vote + " from " + sender + " in round " + round);
 	}
