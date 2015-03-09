@@ -1,17 +1,20 @@
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Random;
 
 public class Process extends UnicastRemoteObject implements Actor, Remote {
 	private int i;
 	private int b;
 	private int n;
+	private int round;
 	private int d;
 	private Actor[] actors;
 	private boolean receive;
-	private int[] receivedVotes;
+	private ArrayList<HashMap<Integer, Integer>> receivedVotes;
 	private Random random;
 
 
@@ -32,39 +35,46 @@ public class Process extends UnicastRemoteObject implements Actor, Remote {
 		this.actors = new Actor[n];
 		this.actors[i] = this;
 		this.receive = true;
-		this.receivedVotes = new int[n];
-		Arrays.fill(receivedVotes, -1);
+		this.receivedVotes = new ArrayList<HashMap<Integer, Integer>>();
 		this.random = new Random();
+		this.round = 0;
 	}
 
 	public void setActor(int i, Actor actor) {
 		actors[i] = actor;
 	}
 
-	public int coordinate() throws RemoteException {
-		receive = true;
+	private HashMap<Integer, Integer> getVotesForRound(int round) {
+		while (receivedVotes.size() <= round) {
+			this.receivedVotes.add(new HashMap<>(this.n));
+		}
 
+		return this.receivedVotes.get(round);
+	}
+
+	public int coordinate() throws RemoteException {
 		// Step 3: Broadcast vote
 		for (int j = 0; j < n; j++) {
-			actors[j].receive(i, b);
+			actors[j].receive(i, round, b);
 		}
 
 		// Step 4: Receive votes from all other processors
-		while (Arrays.stream(receivedVotes).anyMatch(v -> v == -1)) {
+		while (getVotesForRound(round).size() < n) {
 			// Deliberately empty; loop until you've received all votes
 		}
-		receive = false;
+
+		log("Got all votes");
 
 		// Step 5: Compute majority value among votes received
 		int maj;
-		if (Arrays.stream(receivedVotes).sum() < n/2) {
+		if (getVotesForRound(round).values().stream().mapToInt(Integer::intValue).sum() < n/2) {
 			maj = 0;
 		} else {
 			maj = 1;
 		}
 
 		// Step 6: Compute number of occurences of maj among votes received
-		long tally = Arrays.stream(receivedVotes).filter(v -> v == maj).count();
+		long tally = getVotesForRound(round).values().stream().filter(v -> v == maj).count();
 
 		// Step 7: Compute threshold
 		int threshold;
@@ -91,19 +101,15 @@ public class Process extends UnicastRemoteObject implements Actor, Remote {
 			return 0;
 		}
 
-		Arrays.fill(receivedVotes, -1);
+		round++;
 		return -1;
 	}
 
 	@Override
-	public void receive(int sender, int vote) throws RemoteException {
-		while (!receive) {
-			// Block until we are allowed to receive
-		}
+	public void receive(int sender, int round, int vote) throws RemoteException {
+		getVotesForRound(round).put(new Integer(sender), vote);
 
-		receivedVotes[sender] = vote;
-
-		log("Recorded vote " + vote + " from " + sender);
+		log("Recorded vote " + vote + " from " + sender + " in round " + round);
 	}
 
 	private void log(String m) {
