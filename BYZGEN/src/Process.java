@@ -91,6 +91,7 @@ public class Process extends UnicastRemoteObject implements Actor, Remote {
 			return 0;
 		}
 
+		Arrays.fill(receivedVotes, -1);
 		return -1;
 	}
 
