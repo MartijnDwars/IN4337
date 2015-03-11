@@ -3,6 +3,8 @@ import java.rmi.AlreadyBoundException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 
 public class RunAdversary {
 	public static void main(String[] args) throws RemoteException, AlreadyBoundException, MalformedURLException,
@@ -22,8 +24,9 @@ public class RunAdversary {
 
 		log(i, "Adversary bound");
 
-		// Wait 2 sec. so all registers can register themselves with the rmiregistry
-		Thread.sleep(2000);
+		Registry registry = LocateRegistry.getRegistry();
+		while (registry.list().length < n)
+			Thread.sleep(10);
 
 		// Link other processes
 		for (int j = 0; j < n; j++) {
