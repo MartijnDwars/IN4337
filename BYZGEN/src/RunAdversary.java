@@ -4,7 +4,7 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 
-public class RunProcess {
+public class RunAdversary {
 	public static void main(String[] args) throws RemoteException, AlreadyBoundException, MalformedURLException,
 			InterruptedException, NotBoundException {
 		if (args.length != 3) {
@@ -16,11 +16,11 @@ public class RunProcess {
 		int n = Integer.parseInt(args[1]);
 		int b = Integer.parseInt(args[2]);
 
-		Process process = new Process(i, n, b);
+		Adversary process = new Adversary(i, n, b);
 
 		Naming.bind("rmi://localhost:1099/p" + i, process);
 
-		log(i, "Process bound");
+		log(i, "Adversary bound");
 
 		// Wait 2 sec. so all registers can register themselves with the rmiregistry
 		Thread.sleep(2000);
@@ -32,19 +32,16 @@ public class RunProcess {
 
 		log(i, "Start coordinating");
 
-		int iterations = 0;
-
 		// Run the coordinate function in a loop until it returns 0
 		while (process.coordinate() != 0) {
 			// Deliberately empty. Coordinate until you're done..
-			iterations++;
+			log(i, "Next iteration");
 		}
 
 		log(i, "Done");
-		System.out.println(iterations);
 	}
 
 	private static void log(int i, String m) {
-		System.err.println(i + ": " + m);
+		System.err.println("a" + i + ": " + m);
 	}
 }

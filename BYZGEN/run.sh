@@ -4,15 +4,19 @@
 cd ../out/production/BYZGEN
 
 # Start registry
+killall -9 rmiregistry
+sleep .5
 rmiregistry &
 
 # Run 2 register nodes
-java RunProcess 0 6 0 &
-java RunProcess 1 6 1 &
-java RunProcess 2 6 0 &
-java RunProcess 3 6 1 &
-java RunProcess 4 6 0 &
-java RunProcess 5 6 0 &
+java RunProcess 0 8 0 &
+java RunProcess 1 8 1 &
+java RunProcess 2 8 0 &
+java RunProcess 3 8 1 &
+java RunProcess 4 8 0 &
+java RunProcess 5 8 1 &
+java RunProcess 6 8 0 &
+java RunAdversary 7 8 0 &
 
 # Wait for input from the user
 read
