@@ -3,6 +3,8 @@ import java.rmi.AlreadyBoundException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 
 public class RunProcess {
 	public static void main(String[] args) throws RemoteException, AlreadyBoundException, InterruptedException, NotBoundException, MalformedURLException {
@@ -16,12 +18,10 @@ public class RunProcess {
 
 		Process process = new Process(i, n);
 
-		Naming.bind("rmi://localhost:1099/p" + i, process);
-
-		log(i, "Process bound");
-
 		// Wait 2 sec. so all registers can register themselves with the rmiregistry
-		Thread.sleep(2000);
+		Registry registry = LocateRegistry.getRegistry();
+		while (registry.list().length < 2)
+			Thread.sleep(10);
 
 		// Link registers on the process
 		for (int j = 0; j < n; j++) {
@@ -30,16 +30,21 @@ public class RunProcess {
 
 		log(i, "Start coordinating");
 
+		int iterations = 0;
+
 		// Run the coordinate function in a loop until it returns 0
 		while (process.coordinate() != 0) {
 			// Deliberately empty. Coordinate until you're done..
 			log(i, "Next iteration");
+			iterations++;
 		}
 
 		log(i, "Done");
+		System.out.println(" " + iterations + " ");
+		System.exit(0);
 	}
 
 	private static void log(int i, String m) {
-		System.out.println(i + ": " + m);
+		System.err.println(i + ": " + m);
 	}
 }

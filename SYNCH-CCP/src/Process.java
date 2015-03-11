@@ -43,7 +43,7 @@ public class Process {
 		// Step 1
 		int R = register.getValue();
 
-		System.out.println("P" + i + ": B = " + B + ", R = " + R);
+		System.err.println("P" + i + ": B = " + B + ", R = " + R);
 
 		// Step 2
 		if (R == Integer.MAX_VALUE) {

@@ -11,7 +11,6 @@ public class RunRegister {
 		}
 
 		int i = Integer.parseInt(args[0]);
-		int n = Integer.parseInt(args[1]);
 
 		Register register = new Register(i, 0);
 
@@ -21,6 +20,6 @@ public class RunRegister {
 	}
 
 	private static void log(int i, String m) {
-		System.out.println(i + ": " + m);
+		System.err.println(i + ": " + m);
 	}
 }

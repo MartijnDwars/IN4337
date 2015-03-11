@@ -54,9 +54,11 @@ public class Process extends UnicastRemoteObject implements Actor, Remote {
 		// Step 3: Broadcast vote
 		broadcast();
 
+		int size = getVotesForRound(round).size();
 		// Step 4: Receive votes from all other processors
-		while (getVotesForRound(round).size() < n) {
+		while (size < n) {
 			Thread.sleep(10);
+			size = getVotesForRound(round).size();
 			// Deliberately empty; loop until you've received all votes
 		}
 
@@ -89,7 +91,7 @@ public class Process extends UnicastRemoteObject implements Actor, Remote {
 		}
 
 		// Step 9: Set d permanently
-		if (tally >= 7*n/8) {
+		if (tally >= 7 * n / 8) {
 			d = maj;
 
 			log("Round " + round + ": Permanently chosen for " + d);

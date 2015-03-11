@@ -12,6 +12,7 @@ public class Main {
 		int f0 = -1;
 		int f1 = -1;
 
+		int i = 0;
 		// While some process is not finished
 		while (f0 != 0 || f1 != 0) {
 			if (f0 != 0) {
@@ -22,7 +23,9 @@ public class Main {
 				f1 = p1.coordinate();
 			}
 
-			Thread.sleep(1000);
+			i++;
+//			Thread.sleep(1000);
 		}
+		System.out.println(i);
 	}
 }
