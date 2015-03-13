@@ -5,6 +5,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.Random;
 
 public class RunProcess {
 	public static void main(String[] args) throws RemoteException, AlreadyBoundException, MalformedURLException,
@@ -18,7 +19,7 @@ public class RunProcess {
 		int n = Integer.parseInt(args[1]);
 		int b = Integer.parseInt(args[2]);
 
-		Process process = new Process(i, n, b);
+		Process process = new Process(i, n, new Random().nextInt(2));
 
 		Naming.bind("rmi://localhost:1099/p" + i, process);
 

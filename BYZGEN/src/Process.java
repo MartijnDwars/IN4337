@@ -101,8 +101,10 @@ public class Process extends UnicastRemoteObject implements Actor, Remote {
 		// Step 9: Set d permanently
 		if (tally >= 7 * n / 8) {
 			d = maj;
+			b = maj;
 
 			log("Round " + round + ": Permanently chosen for " + d);
+			broadcast();
 
 			return 0;
 		}
