@@ -60,7 +60,7 @@ public class Process implements Actor {
 	public void coordinate(int coin) {
 		if (!hasDecided()) {
 			// Step 5: Compute majority value among votes received
-			int maj = Arrays.stream(receivedVotes.get(round)).sum() < n / 2 ? 0 : 1;
+			int maj = majority(receivedVotes.get(round));
 
 			// Step 6: Compute number of occurences of maj among votes received
 			long tally = Arrays.stream(receivedVotes.get(round)).filter(v -> v == maj).count();
@@ -86,6 +86,17 @@ public class Process implements Actor {
 		this.receivedVotes.add(a);
 
 		round++;
+	}
+
+	/**
+	 * Compute majority of given votes. If n is even there may not be a
+	 * majority. In that case, 0 is chosen as majority.
+	 *
+	 * @param votes Array of votes
+	 * @return The majority vote, which is either 0 or 1
+	 */
+	public int majority(int[] votes) {
+		return Arrays.stream(votes).sum() <= n / 2 ? 0 : 1;
 	}
 
 	public void receive(int sender, int round, int vote) {
