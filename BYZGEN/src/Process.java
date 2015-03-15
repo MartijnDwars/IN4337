@@ -1,13 +1,13 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Process {
+public class Process implements Actor {
 	protected int i;
 	protected int b;
 	protected int n;
 	protected int round;
 	protected int d;
-	protected Process[] processes;
+	protected Actor[] processes;
 	protected ArrayList<int[]> receivedVotes;
 
 
@@ -34,7 +34,7 @@ public class Process {
 		this.receivedVotes.add(a);
 	}
 
-	public void setProcess(int i, Process process) {
+	public void setProcess(int i, Actor process) {
 		processes[i] = process;
 	}
 
@@ -57,7 +57,7 @@ public class Process {
 		return d != -1;
 	}
 
-	public void coordinate(int coin) throws InterruptedException {
+	public void coordinate(int coin) {
 		if (!hasDecided()) {
 			// Step 5: Compute majority value among votes received
 			int maj = Arrays.stream(receivedVotes.get(round)).sum() < n / 2 ? 0 : 1;
@@ -98,7 +98,17 @@ public class Process {
 		log("Recorded vote " + vote + " from " + sender + " in round " + round);
 	}
 
-	private void log(String m) {
+	/**
+	 * A process is never halted, according to the ByzGen algorithm in Motwani
+	 *
+	 * @return boolean Flag indicating if the process is halted
+	 */
+	@Override
+	public boolean isHalted() {
+		return false;
+	}
+
+	protected void log(String m) {
 		System.err.println(i + ": " + m);
 	}
 }

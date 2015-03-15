@@ -30,4 +30,14 @@ public class Adversary extends Process {
 			processes[j].receive(i, round, new Random().nextInt(2));
 		}
 	}
+
+	/**
+	 * An adversary is always halted
+	 *
+	 * @return boolean Flag indicating if the advesery is halted
+	 */
+	@Override
+	public boolean isHalted() {
+		return true;
+	}
 }
