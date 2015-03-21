@@ -8,4 +8,8 @@ public interface Actor {
 	public void broadcast();
 
 	public void coordinate(int coin);
+
+	public boolean hasDecided();
+
+	public int getDecision();
 }

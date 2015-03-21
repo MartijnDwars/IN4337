@@ -57,6 +57,10 @@ public class Process implements Actor {
 		return d != -1;
 	}
 
+	public int getDecision() {
+		return d;
+	}
+
 	public void coordinate(int coin) {
 		if (!hasDecided()) {
 			// Step 5: Compute majority value among votes received
@@ -66,13 +70,13 @@ public class Process implements Actor {
 			long tally = Arrays.stream(receivedVotes.get(round)).filter(v -> v == maj).count();
 
 			// Step 7: Compute threshold
-			int threshold = coin == 1 ? 5 * n / 8 + 1 : 3 * n / 4 + 1;
+			int threshold = coin == 1 ? getL() : getH();
 
 			// Step 8: Compute vote
 			b = tally >= threshold ? maj : 0;
 
 			// Step 9: Set d permanently
-			if (tally >= 7 * n / 8) {
+			if (tally >= getG()) {
 				d = maj;
 				b = maj;
 
@@ -88,9 +92,21 @@ public class Process implements Actor {
 		round++;
 	}
 
+	protected int getL() {
+		return 5 * n / 8 + 1;
+	}
+
+	protected int getH() {
+		return 3 * n / 4 + 1;
+	}
+
+	protected int getG() {
+		return 7 * n / 8;
+	}
+
 	/**
-	 * Compute majority of given votes. If n is even there may not be a
-	 * majority. In that case, 0 is chosen as majority.
+	 * Compute majority of given votes. If n is even there may not be a majority. In that case, 0 is chosen as
+	 * majority.
 	 *
 	 * @param votes Array of votes
 	 * @return The majority vote, which is either 0 or 1
