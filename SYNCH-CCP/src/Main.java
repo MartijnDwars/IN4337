@@ -1,5 +1,9 @@
 public class Main {
 	public static void main(String[] args) throws InterruptedException {
+		System.out.println(run());
+	}
+
+	public static int run() {
 		Register[] registers = new Register[] {
 				new Register(0),
 				new Register(0)
@@ -12,7 +16,7 @@ public class Main {
 		int f0 = -1;
 		int f1 = -1;
 
-		int i = 0;
+		int iterations = 0;
 		// While some process is not finished
 		while (f0 != 0 || f1 != 0) {
 			if (f0 != 0) {
@@ -23,9 +27,10 @@ public class Main {
 				f1 = p1.coordinate();
 			}
 
-			i++;
-//			Thread.sleep(1000);
+			iterations++;
+			//Thread.sleep(1000);
 		}
-		System.out.println(i);
+
+		return iterations;
 	}
 }

@@ -20,8 +20,9 @@ public class RunProcess {
 
 		// Wait 2 sec. so all registers can register themselves with the rmiregistry
 		Registry registry = LocateRegistry.getRegistry();
-		while (registry.list().length < 2)
+		while (registry.list().length < 2) {
 			Thread.sleep(10);
+		}
 
 		// Link registers on the process
 		for (int j = 0; j < n; j++) {

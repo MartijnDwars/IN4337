@@ -1,11 +1,8 @@
-public class Emp3 {
+public class Emp7 {
 	public static void main(String[] args) throws InterruptedException {
-		// Number of iterations for constant ratio t = n/4
-		//
-		// (t,n) = (4,1), (8, 2), ..., (99*4, 99)
+		// Number of iterations for t = 4, n = (4+1)*8 = 40
 		System.out.println("n,t,iterations");
-		for (int t = 1; t < 100; t++) {
-			int n = (t)*4;
+		for (int t = 4, n = 40, i = 0; i < 1000; i++) {
 			System.out.println(n + "," + t + "," + Main.run(n, t));
 		}
 	}

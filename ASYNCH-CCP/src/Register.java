@@ -22,7 +22,8 @@ public class Register extends UnicastRemoteObject implements RegisterInterface, 
 	}
 
 	/**
-	 * Acquire a lock
+	 * Acquire a lock. This method is synchronized, because two processes may
+	 * try to acquire the lock in two RMI threads.
 	 *
 	 * @return boolean True iff the lock was given to the requesting process
 	 */

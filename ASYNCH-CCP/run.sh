@@ -11,7 +11,7 @@ do
     rmiregistry &
     sleep .5
 
-    # Run 2 register nodes
+    # Run 2 registers
     java RunRegister 0 2 &
     pids[0]=$!
     java RunRegister 1 2 &
